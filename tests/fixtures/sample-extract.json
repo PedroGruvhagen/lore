@@ -1,0 +1,16 @@
+{
+  "a": {
+    "b": [1, 2, 3]
+  },
+  "scalar": "hello world",
+  "flag": true,
+  "nested": {
+    "x": {
+      "y": 42
+    }
+  },
+  "items": [
+    {"name": "first"},
+    {"name": "second"}
+  ]
+}

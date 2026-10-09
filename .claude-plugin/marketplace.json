@@ -1,0 +1,14 @@
+{
+  "name": "lore",
+  "owner": {
+    "name": "Pedro Gruvhagen"
+  },
+  "plugins": [
+    {
+      "name": "lore",
+      "source": "./",
+      "description": "Lore memory integration: MEMORY.md write guard, index loader, recall/remember, /lore status."
+    }
+  ],
+  "description": "Marketplace for the Lore memory plugin."
+}

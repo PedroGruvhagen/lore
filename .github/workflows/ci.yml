@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.12', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run test suite (stdlib unittest only)
+        run: bash tests/run.sh
+
+  shell:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install shellcheck
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - name: shellcheck every shipped script
+        run: |
+          set -eu
+          scripts=$(find skill scripts tests -name '*.sh' 2>/dev/null; echo install.sh)
+          echo "$scripts"
+          # -S warning: the shipped scripts carry 10 info-level findings
+          # under shellcheck 0.11.0 (4x SC1091 dynamic `source` path, 3x
+          # SC2016 intentionally-literal $VAR in a log message, 2x SC2153
+          # env var read but not locally assigned, 1x SC2329 a
+          # trap-registered handler shellcheck can't trace) that are
+          # confirmed false positives / intentional, not bugs; -S warning
+          # still fails the job on anything at warning severity or above.
+          # shellcheck disable=SC2086
+          shellcheck -S warning $scripts
+
+  install:
+    name: installer round-trip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: install.sh --scheduler none, then doctor --offline
+        run: |
+          set -eu
+          CFG_DIR="$(mktemp -d)"
+          bash install.sh --config-dir "$CFG_DIR" --scheduler none
+          python3 skill/scripts/lore.py doctor --lore-dir "$CFG_DIR/lore" --offline
+
+  systemd-render:
+    name: systemd unit render + verify (ubuntu only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install.sh --render-only, then systemd-analyze verify
+        run: |
+          set -eu
+          OUT_DIR="$(mktemp -d)"
+          bash install.sh --scheduler systemd --render-only "$OUT_DIR"
+          ls "$OUT_DIR"
+          systemd-analyze verify "$OUT_DIR"/*.service "$OUT_DIR"/*.timer
+
+  privacy:
+    name: privacy grep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: scripts/privacy-grep.sh over the checkout
+        run: bash scripts/privacy-grep.sh "$GITHUB_WORKSPACE"
+
+  docs-fences:
+    name: docs fenced-block length
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fail on fenced code blocks over 40 lines in docs/
+        run: |
+          set -eu
+          if [ ! -d docs ]; then
+            echo "no docs/ yet (created in a later phase); nothing to check"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import sys
+          from pathlib import Path
+
+          MAX_LINES = 40
+          failures = []
+          for path in sorted(Path("docs").rglob("*.md")):
+              text = path.read_text(encoding="utf-8")
+              lines = text.splitlines()
+              in_fence = False
+              fence_start = 0
+              fence_len = 0
+              for i, line in enumerate(lines, start=1):
+                  if line.strip().startswith("```"):
+                      if not in_fence:
+                          in_fence = True
+                          fence_start = i
+                          fence_len = 0
+                      else:
+                          in_fence = False
+                          if fence_len > MAX_LINES:
+                              failures.append(f"{path}:{fence_start}: fenced block has {fence_len} lines (max {MAX_LINES})")
+                  elif in_fence:
+                      fence_len += 1
+          if failures:
+              print("\n".join(failures))
+              sys.exit(1)
+          print("docs-fences: all fenced blocks within limit")
+          PY
+
+  examples:
+    name: examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: run examples/quickstart.sh
+        if: hashFiles('examples/quickstart.sh') != ''
+        run: bash examples/quickstart.sh
+      - name: run examples/deterministic_facts.py
+        if: hashFiles('examples/deterministic_facts.py') != ''
+        run: python3 examples/deterministic_facts.py
+      - name: no examples/ yet
+        if: hashFiles('examples/quickstart.sh') == '' && hashFiles('examples/deterministic_facts.py') == ''
+        run: echo "no examples/ yet (created in a later phase); nothing to run"

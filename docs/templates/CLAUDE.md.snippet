@@ -1,0 +1,23 @@
+<!--
+  Add this block to a project's CLAUDE.md (or equivalent agent-instructions file) to wire it
+  into a project-scoped lore directory. See docs/project-scope.md for what "project scope"
+  means and how it differs from a global lore directory shared across projects.
+-->
+
+## Project knowledge base (lore)
+
+This project keeps a local, agent-maintained knowledge base under `lore/` (gitignored; see
+`docs/templates/project-gitignore.snippet`). Before working on an unfamiliar subsystem, read
+`lore/index.md` for the list of pages, then the specific page that covers it. `lore/index.md`
+is an index: it points at pages, it does not duplicate their content.
+
+After learning something about this project that is not obvious from the code or git
+history (a design decision, a constraint, a gotcha), record it as a new or updated page under
+`lore/pages/`, following `lore/schema.md`, then rebuild the index:
+
+```bash
+python3 <path-to-lore>/scripts/lore.py index --lore-dir lore
+```
+
+Do not duplicate a fact that is already clear from reading the code itself; lore is for
+context the code cannot show on its own.

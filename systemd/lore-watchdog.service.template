@@ -1,0 +1,12 @@
+[Unit]
+Description=Lore watchdog
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash __SKILL_DIR__/scripts/lore-watchdog.sh
+Environment=LORE_DIR=__LORE_DIR__
+Environment=HOME=__HOME__
+Environment=PATH=__PATH__
+WorkingDirectory=__HOME__
+StandardOutput=append:__LORE_DIR__/.watchdog.stdout.log
+StandardError=append:__LORE_DIR__/.watchdog.stderr.log

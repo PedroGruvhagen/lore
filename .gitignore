@@ -1,0 +1,22 @@
+# Autonomous protocol scratch (task files, handoffs, logs) - never committed
+.tasks/
+
+# Deferred/blocked-item records (Zero Placeholder Law escalations) - local only
+.deferred/
+
+# OS and editor cruft
+.DS_Store
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Editor/manual backup files
+*.bak*
+
+# Claude Code plugin local files
+lore-debug.log
+*.log
+node_modules/
+.claude-plugin/types/
+tsconfig.json

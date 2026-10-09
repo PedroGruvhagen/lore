@@ -1,0 +1,70 @@
+{
+  "name": "lore",
+  "version": "0.1.0",
+  "description": "Lore memory integration: MEMORY.md write guard, session index loader, recall/remember tools, /lore status. Deterministic, local-only, no model calls.",
+  "author": {
+    "name": "Pedro Gruvhagen"
+  },
+  "userConfig": {
+    "maxLines": {
+      "type": "number",
+      "title": "MEMORY.md max lines",
+      "description": "Maximum number of lines a MEMORY.md index may have.",
+      "default": 150,
+      "min": 10,
+      "max": 200
+    },
+    "maxLineChars": {
+      "type": "number",
+      "title": "MEMORY.md max characters per line",
+      "description": "Maximum characters on one MEMORY.md line (a hook plus a pointer to a Lore page).",
+      "default": 200,
+      "min": 40,
+      "max": 1000
+    },
+    "maxBytes": {
+      "type": "number",
+      "title": "MEMORY.md max bytes",
+      "description": "Maximum size of a MEMORY.md index in bytes (the harness stops loading past about 24,400).",
+      "default": 19500,
+      "min": 1000,
+      "max": 24400
+    },
+    "loadIndex": {
+      "type": "boolean",
+      "title": "Load the MEMORY.md index at session start",
+      "description": "Inject the cwd's MEMORY.md index and the Lore rules at session start and after clear, resume, fork and compact. Turn on only together with autoMemoryEnabled=false, otherwise Claude Code loads the index a second time.",
+      "default": true
+    },
+    "projectsDir": {
+      "type": "string",
+      "title": "Claude projects directory",
+      "description": "Absolute path of the Claude Code projects directory that holds <project>/memory/MEMORY.md, for example ~/.claude/projects expanded to a full path.",
+      "required": true
+    },
+    "python": {
+      "type": "string",
+      "title": "Python interpreter",
+      "description": "Absolute path of a Python 3.12+ interpreter that runs lore.py.",
+      "required": true
+    },
+    "lorePy": {
+      "type": "string",
+      "title": "lore.py path",
+      "description": "Absolute path of lore.py as installed by install.sh (<config-dir>/skills/lore/scripts/lore.py).",
+      "required": true
+    },
+    "loreDir": {
+      "type": "string",
+      "title": "Global Lore directory",
+      "description": "Absolute path of your Lore data directory, passed to lore.py as --lore-dir.",
+      "required": true
+    },
+    "accountDirs": {
+      "type": "string",
+      "multiple": true,
+      "title": "Claude config directories to report on",
+      "description": "Claude config directories whose settings.json /lore checks for autoMemoryEnabled=false. Leave empty to skip the check."
+    }
+  }
+}

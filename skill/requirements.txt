@@ -1,0 +1,7 @@
+# No external dependencies - lore uses Python stdlib only
+# sqlite3 (FTS5), json, pathlib, datetime, argparse, re
+#
+# One optional exception: connectors/pdf.py shells out to a separate subprocess
+# that imports mistralai and needs MISTRAL_API_KEY. That dependency is isolated
+# to the subprocess and only needed if you have PDF sources; install it
+# yourself with `pip install mistralai` if you do. See docs/connectors.md.

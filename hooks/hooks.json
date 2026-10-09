@@ -1,0 +1,1 @@
+{ "description": "Lore memory hooks module", "modules": ["./register.ts"] }
