@@ -425,7 +425,9 @@ TODAY="$(date +%Y-%m-%d)"
 RUN_LOG="$GDIR/run-$TODAY.jsonl"
 REPORT="$GDIR/report-$TODAY.md"
 cd "$LORE_DIR" || fail_and_exit "cd $LORE_DIR failed" "Could not cd into $LORE_DIR; gardener did not run."
-GARDENER_ENV=(CLAUDE_CONFIG_DIR="$LORE_AGENT_CONFIG_DIR")
+# The gardener needs only the mandate prompt and its own tools: no CLAUDE.md, no user hooks or plugins,
+# no MCP servers (account-independent; only the login of $LORE_AGENT_CONFIG_DIR is used).
+GARDENER_ENV=(CLAUDE_CONFIG_DIR="$LORE_AGENT_CONFIG_DIR" CLAUDE_CODE_DISABLE_CLAUDE_MDS=1)
 if [ "$LORE_KEEP_API_KEY" != "1" ]; then
     GARDENER_ENV+=(ANTHROPIC_API_KEY=)
 fi
@@ -470,8 +472,9 @@ while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
     : >"$RUN_LOG"
     run_with_timeout "$CLAUDE_TIMEOUT_SEC" env "${GARDENER_ENV[@]}" "${CMD_ARR[@]}" \
         --dangerously-skip-permissions --permission-mode bypassPermissions \
+        --setting-sources project --strict-mcp-config \
         ${MODEL_ARGS_ARR[@]+"${MODEL_ARGS_ARR[@]}"} \
-        "$PROMPT" --output-format stream-json \
+        "$PROMPT" --output-format stream-json --verbose \
         >>"$RUN_LOG" 2>&1
     CRC=$?
     glog "claude rc=$CRC (attempt $ATTEMPT/$MAX_ATTEMPTS)"

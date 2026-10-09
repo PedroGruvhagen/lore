@@ -2,7 +2,7 @@
 // timestamps, so the injected block is byte-stable between requests (prompt cache).
 
 export const RULES = [
-  'Lore memory rules (from the global CLAUDE.md):',
+  'Lore memory rules:',
   '- MEMORY.md is an index only: one line per fact, a short hook plus a pointer to a Lore page. Detail lives in the page.',
   '- Before touching a subsystem or answering about a named project, person, server or technical fact, search Lore (mcp__lore__recall) and read the page first.',
   '- Save only durable facts, never session chatter. Edit the matching Lore page in place; for a quick capture use mcp__lore__remember.',
