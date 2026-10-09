@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   credential shapes only and reads personal strings from a private file named by
   `LORE_PRIVACY_BLOCKLIST`.
 - Repository history was restarted from a clean initial commit.
+- The Lore tool (CLI, scripts, installer, templates, tests, examples, tool docs) moved under `tool/`; the plugin is the repository root. Paths in the 1.0.0 notes below are relative to `tool/`.
 
 ## [1.0.0] - First public release
 

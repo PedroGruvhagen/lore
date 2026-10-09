@@ -291,7 +291,7 @@ non-zero on failure. Point `$LORE_GARDENER_CMD` at a wrapper script to use a dif
 
 `lore.py doctor` self-tests the whole chain; `lore.py pending --summary` is wired into the
 SessionStart hook so every session sees what is awaiting reconciliation. Alerts go through
-`scripts/lore-alert.sh` (channel configured in `{lore}/.lore.env`, gitignored). Per-project
+`tool/scripts/lore-alert.sh` (channel configured in `{lore}/.lore.env`, gitignored). Per-project
 lore dirs are not on the timers; refresh them on demand.
 
 ### On-demand refresh

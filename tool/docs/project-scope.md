@@ -11,7 +11,7 @@ project's `lore/` explicitly if you want project scope through MCP).
 
 ## Why keep it gitignored
 
-`docs/templates/project-gitignore.snippet` adds a single `lore/` line to a consuming
+`tool/docs/templates/project-gitignore.snippet` adds a single `lore/` line to a consuming
 project's `.gitignore`. A project-scoped lore directory is the agent's own working notes
 about that project: useful for future sessions, not something the project's collaborators or
 CI need to see, and it will contain content that changes on every refresh
@@ -21,8 +21,8 @@ instead, in prose, the way any other project knowledge is shared.
 
 ## Wiring a project
 
-1. Add `docs/templates/project-gitignore.snippet`'s line to the project's `.gitignore`.
-2. Add `docs/templates/CLAUDE.md.snippet`'s block to the project's `CLAUDE.md` (or
+1. Add `tool/docs/templates/project-gitignore.snippet`'s line to the project's `.gitignore`.
+2. Add `tool/docs/templates/CLAUDE.md.snippet`'s block to the project's `CLAUDE.md` (or
    equivalent agent-instructions file), pointing at wherever this repository is installed.
 3. Bootstrap the directory: `python3 <path-to-lore>/scripts/lore.py bootstrap --lore-dir
    lore` from the project root.

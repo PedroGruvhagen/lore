@@ -1,11 +1,11 @@
 # The maintenance loop
 
-Three scheduled shell scripts under `skill/scripts/` keep a lore directory current without a
+Three scheduled shell scripts under `tool/skill/scripts/` keep a lore directory current without a
 human running commands by hand: `lore-refresh.sh`, `lore-gardener.sh`, and
 `lore-watchdog.sh`. All three source `lore-common.sh` first, which resolves `SKILL_DIR` and
 `LORE_DIR`, sources an optional `.lore.env` from the lore directory (see
-`skill/lore.env.example` for every variable and its default), and provides the portability
-helpers described below. `install.sh` schedules all three (see `install-macos.md` /
+`tool/skill/lore.env.example` for every variable and its default), and provides the portability
+helpers described below. `tool/install.sh` schedules all three (see `install-macos.md` /
 `install-linux.md`).
 
 `lore-gardener.sh` and `lore-refresh.sh`, the two primary scripts, share a four-layer
@@ -34,13 +34,13 @@ The nightly maintenance pass: runs refresh, collects `lore.py pending --json` (q
 unseen failures, quarantined sources, stale auto-update pages, inbox notes), and, only if
 the count of actionable items (diffs, unseen failures, quarantined sources, inbox notes;
 stale pages alone do not count, since refresh has just run) is non-zero, launches a headless
-CLI agent with a rendered prompt (`skill/references/gardener-prompt.md`) describing the work
+CLI agent with a rendered prompt (`tool/skill/references/gardener-prompt.md`) describing the work
 queue and the priority order to work through it (reconcile diffs, investigate quarantined
 sources, mark reviewed failures, file inbox notes, fix lint errors, curate at most one
 oversized page, rebuild the index, verify). `LORE_GARDENER_DRYRUN=1` runs everything up to
 that point, logs what it would do, and exits 0 before the preflights and before ever
-launching the agent. The test suite (`tests/test_shell.py`) exercises the full launch path
-instead, running the gardener against the fake agent scripts under `tests/fixtures/`.
+launching the agent. The test suite (`tool/tests/test_shell.py`) exercises the full launch path
+instead, running the gardener against the fake agent scripts under `tool/tests/fixtures/`.
 
 Before launching the agent: a network preflight (`curl` against
 `LORE_GARDENER_NETWORK_CHECK_URL`, default `https://api.anthropic.com/`, retried

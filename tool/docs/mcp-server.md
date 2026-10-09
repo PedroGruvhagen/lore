@@ -1,6 +1,6 @@
 # MCP server
 
-`skill/scripts/lore-mcp-server.py` exposes a lore directory to any MCP client (Claude
+`tool/skill/scripts/lore-mcp-server.py` exposes a lore directory to any MCP client (Claude
 Desktop, or another tool that speaks MCP) over stdio JSON-RPC, read-only. It implements the
 protocol directly with the Python standard library (`json`, `sqlite3`, `re`, `pathlib`); no
 `pip install` is needed to run it, and it never writes to the lore directory.
@@ -47,5 +47,5 @@ cannot be used to read a file outside `pages/` or `extracts/`.
 Point an MCP client's server config at
 `python3 <config-dir>/skills/lore/scripts/lore-mcp-server.py`, with `LORE_DIR` set in that
 client's environment block if the lore directory is not at the inferred default path.
-`tests/test_mcp_server.py` exercises the server the same way a real client would: JSON-RPC
+`tool/tests/test_mcp_server.py` exercises the server the same way a real client would: JSON-RPC
 messages written to its stdin over a pipe, responses read from its stdout.

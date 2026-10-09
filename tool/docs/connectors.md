@@ -41,7 +41,7 @@ than an HTTP body.
 
 `github_releases.py` sends its `Authorization: Bearer $GITHUB_TOKEN` header through
 `curl --config -` on stdin rather than a `-H` command-line argument, the same pattern
-`_send_telegram_alert()` in `skill/scripts/lore-common.sh` uses for its Telegram bot token
+`_send_telegram_alert()` in `tool/skill/scripts/lore-common.sh` uses for its Telegram bot token
 (see `maintenance-loop.md`), so the token never appears in a process listing.
 
 ## The PDF connector's one non-stdlib dependency
@@ -52,17 +52,17 @@ imports `mistralai` and calls the Mistral OCR API, so the dependency is isolated
 subprocess and never imported by `lore.py`, `lore-mcp-server.py`, or any other connector.
 `pdf.fetch()` raises `RuntimeError` immediately, before downloading anything, if
 `MISTRAL_API_KEY` is not set in the environment; the OCR subprocess itself is given up to 300
-seconds. `skill/requirements.txt` documents this as the one optional dependency; install
+seconds. `tool/skill/requirements.txt` documents this as the one optional dependency; install
 `mistralai` yourself only if you have PDF sources and a Mistral API key. Every other
 connector, and `lore.py`/`lore-mcp-server.py` themselves, need nothing beyond the standard
 library.
 
 ## Writing your own connector
 
-Drop a new `<name>.py` into `$LORE_DIR/connectors/` (or `skill/connectors/` before an
+Drop a new `<name>.py` into `$LORE_DIR/connectors/` (or `tool/skill/connectors/` before an
 install copies it) exposing `fetch(url, timeout=30) -> (content, etag)` and
 `hash_content(content) -> str`, and add a rule for it to `_pick_connector_name()`. If your
 connector needs a size cap, curl/urllib fallback, or header parsing, load `_http.py` the way
 the shipped text connectors do rather than reimplementing it. If it needs a package outside
 the standard library, isolate that import in a subprocess the way `pdf.py` does, and document
-the exception in `skill/requirements.txt` and here.
+the exception in `tool/skill/requirements.txt` and here.

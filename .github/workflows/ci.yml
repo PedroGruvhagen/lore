@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run test suite (stdlib unittest only)
-        run: bash tests/run.sh
+        run: bash tool/tests/run.sh
 
   shell:
     name: shellcheck
@@ -36,7 +36,7 @@ jobs:
       - name: shellcheck every shipped script
         run: |
           set -eu
-          scripts=$(find skill scripts tests -name '*.sh' 2>/dev/null; echo install.sh)
+          scripts=$(find tool/skill tool/scripts tool/tests -name '*.sh' 2>/dev/null; echo tool/install.sh)
           echo "$scripts"
           # -S warning: the shipped scripts carry 10 info-level findings
           # under shellcheck 0.11.0 (4x SC1091 dynamic `source` path, 3x
@@ -60,8 +60,8 @@ jobs:
         run: |
           set -eu
           CFG_DIR="$(mktemp -d)"
-          bash install.sh --config-dir "$CFG_DIR" --scheduler none
-          python3 skill/scripts/lore.py doctor --lore-dir "$CFG_DIR/lore" --offline
+          bash tool/install.sh --config-dir "$CFG_DIR" --scheduler none
+          python3 tool/skill/scripts/lore.py doctor --lore-dir "$CFG_DIR/lore" --offline
 
   systemd-render:
     name: systemd unit render + verify (ubuntu only)
@@ -72,7 +72,7 @@ jobs:
         run: |
           set -eu
           OUT_DIR="$(mktemp -d)"
-          bash install.sh --scheduler systemd --render-only "$OUT_DIR"
+          bash tool/install.sh --scheduler systemd --render-only "$OUT_DIR"
           ls "$OUT_DIR"
           systemd-analyze verify "$OUT_DIR"/*.service "$OUT_DIR"/*.timer
 
@@ -82,7 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: scripts/privacy-grep.sh over the checkout
-        run: bash scripts/privacy-grep.sh "$GITHUB_WORKSPACE"
+        run: bash tool/scripts/privacy-grep.sh "$GITHUB_WORKSPACE"
 
   docs-fences:
     name: docs fenced-block length
@@ -102,7 +102,7 @@ jobs:
 
           MAX_LINES = 40
           failures = []
-          for path in sorted(Path("docs").rglob("*.md")):
+          for path in sorted(Path("tool/docs").rglob("*.md")):
               text = path.read_text(encoding="utf-8")
               lines = text.splitlines()
               in_fence = False
@@ -135,11 +135,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: run examples/quickstart.sh
-        if: hashFiles('examples/quickstart.sh') != ''
-        run: bash examples/quickstart.sh
+        if: hashFiles('tool/examples/quickstart.sh') != ''
+        run: bash tool/examples/quickstart.sh
       - name: run examples/deterministic_facts.py
-        if: hashFiles('examples/deterministic_facts.py') != ''
-        run: python3 examples/deterministic_facts.py
+        if: hashFiles('tool/examples/deterministic_facts.py') != ''
+        run: python3 tool/examples/deterministic_facts.py
       - name: no examples/ yet
-        if: hashFiles('examples/quickstart.sh') == '' && hashFiles('examples/deterministic_facts.py') == ''
+        if: hashFiles('tool/examples/quickstart.sh') == '' && hashFiles('tool/examples/deterministic_facts.py') == ''
         run: echo "no examples/ yet (created in a later phase); nothing to run"

@@ -18,11 +18,11 @@ Tested against Claude Code **2.1.295** (mods need 2.1.287 or newer). The mods AP
 
 ## Install
 
-Requirements: Claude Code 2.1.287 or newer (the mods API is early access), and a Lore install from this repository (`install.sh`), which provides `lore.py` and your Lore data directory.
+Requirements: Claude Code 2.1.287 or newer (the mods API is early access), and a Lore install from this repository (`tool/install.sh`), which provides `lore.py` and your Lore data directory.
 
 1. Install the Lore tool and create a data directory:
 
-       bash install.sh --config-dir ~/.claude
+       bash tool/install.sh --config-dir ~/.claude
 
    This puts `lore.py` at `~/.claude/skills/lore/scripts/lore.py` and creates `~/.claude/lore`.
 2. Add the marketplace and install the plugin, then reload:

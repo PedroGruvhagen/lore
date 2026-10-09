@@ -9,7 +9,7 @@ itself, see `page-format.md`. For the refresh/gardener/watchdog loop, see
 `lore.py bootstrap --lore-dir <path>` creates the directories, the three markdown files,
 `.gitignore`, an empty `.hashes.json`, an empty `.graph.json`, and `lint-config.json`
 (seeded from a shipped default) listed below, and seeds `connectors/` from the shipped
-`skill/connectors/` when it is empty; only `.search.db` is written later, by `lore.py index`:
+`tool/skill/connectors/` when it is empty; only `.search.db` is written later, by `lore.py index`:
 
 - `index.md`: a generated catalog, one row per page: title, category, confidence,
   auto-update flag, last-verified date. Rebuilt by `lore.py index`; never hand-edited.

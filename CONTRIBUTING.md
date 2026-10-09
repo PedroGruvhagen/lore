@@ -7,12 +7,12 @@ placeholder.
 ## Running the tests
 
 ```bash
-bash tests/run.sh
+bash tool/tests/run.sh
 ```
 
 This runs `python3 -m unittest discover -s tests -v`. The suite needs only the Python
-standard library and a `bash` on `$PATH`; nothing is installed first. `tests/test_shell.py`
-additionally shells out to `bash -n` on every script under `skill/scripts/`, so a shell
+standard library and a `bash` on `$PATH`; nothing is installed first. `tool/tests/test_shell.py`
+additionally shells out to `bash -n` on every script under `tool/skill/scripts/`, so a shell
 syntax error fails the suite the same way a Python one does.
 
 The floor is Python 3.12 (3.10 and 3.11 are security-only and 3.10 reaches end of life in
@@ -24,27 +24,27 @@ Python `3.12` and `3.14`.
 Before sending a change, also run:
 
 ```bash
-bash examples/quickstart.sh
-bash scripts/privacy-grep.sh .
+bash tool/examples/quickstart.sh
+bash tool/scripts/privacy-grep.sh .
 ```
 
 The privacy grep must print `0 hits outside allowlist`. It exists to keep personal data out
 of this public repository; a change that adds a real name, path, hostname, or credential
-anywhere outside `LICENSE`, `NOTICE`, `README.md`, or `skill/SKILL.md`'s attribution line
+anywhere outside `LICENSE`, `NOTICE`, `README.md`, or `tool/skill/SKILL.md`'s attribution line
 will fail it, and CI runs the same check.
 
 ## No dependencies
 
-`skill/` imports only the Python standard library. The one documented exception is the PDF
-connector (`skill/connectors/pdf.py`), which shells out to a separate Python subprocess that
+`tool/skill/` imports only the Python standard library. The one documented exception is the PDF
+connector (`tool/skill/connectors/pdf.py`), which shells out to a separate Python subprocess that
 imports `mistralai`; that subprocess only runs when `MISTRAL_API_KEY` is set, and its
-dependency is isolated from the rest of the codebase (see `docs/connectors.md`). Do not add
+dependency is isolated from the rest of the codebase (see `tool/docs/connectors.md`). Do not add
 an import to `lore.py`, `lore-mcp-server.py`, or any other connector that is not in the
 standard library; if a feature genuinely needs one, isolate it in its own subprocess the same
-way and document it in `docs/connectors.md` and `skill/requirements.txt`.
+way and document it in `tool/docs/connectors.md` and `tool/skill/requirements.txt`.
 
-Shell scripts target `bash`, sourcing `skill/scripts/lore-common.sh` for anything that
-differs between macOS and Linux (see `docs/maintenance-loop.md`). Do not add a
+Shell scripts target `bash`, sourcing `tool/skill/scripts/lore-common.sh` for anything that
+differs between macOS and Linux (see `tool/docs/maintenance-loop.md`). Do not add a
 platform-specific command directly to `lore-gardener.sh`, `lore-refresh.sh`, or
 `lore-watchdog.sh`; add a portable helper to `lore-common.sh` instead, following the pattern
 already there (one form tried first, the other tried second, a documented no-op last, with
@@ -63,7 +63,7 @@ reasoning).
 - Python: standard library only (see above); type-annotate new function signatures the way
   the surrounding code already does.
 - Docs and comments: no em dashes; no real Claude model IDs (use fictional names such as
-  `example-model-large`, matching `skill/references/page-format.md`); no time, effort, or
+  `example-model-large`, matching `tool/skill/references/page-format.md`); no time, effort, or
   cost estimates.
 - One change per pull request, with a commit message that says what changed and why.
 

@@ -1,7 +1,7 @@
 # Installing on Linux
 
 ```bash
-bash install.sh --config-dir ~/.claude
+bash tool/install.sh --config-dir ~/.claude
 ```
 
 The copy, bootstrap, and `.lore.env` steps are identical to the macOS install (see
@@ -10,11 +10,11 @@ portability fallbacks used when a Linux command a script normally prefers is not
 
 ## Scheduler
 
-`install.sh` auto-detects `--scheduler systemd` when `systemctl` is on `$PATH` **and** a
+`tool/install.sh` auto-detects `--scheduler systemd` when `systemctl` is on `$PATH` **and** a
 `--user` manager is actually reachable (`systemctl --user list-units` succeeds; having the
 binary installed is not enough, since a container or a session started outside a login
 manager can lack a running `--user` instance). When detected, it renders the six templates
-under `systemd/`: a `.service` and a `.timer` for each of `lore-gardener`, `lore-refresh`,
+under `tool/systemd/`: a `.service` and a `.timer` for each of `lore-gardener`, `lore-refresh`,
 `lore-watchdog`, substituting the same `__HOME__`/`__SKILL_DIR__`/`__LORE_DIR__`/`__PATH__`
 tokens as the launchd templates, into `~/.config/systemd/user/`, runs
 `systemctl --user daemon-reload`, and enables each timer with
@@ -24,7 +24,7 @@ tokens as the launchd templates, into `~/.config/systemd/user/`, runs
 systemctl --user list-timers | grep lore-
 ```
 
-If no `--user` systemd manager is reachable but `crontab` is, `install.sh` falls back to
+If no `--user` systemd manager is reachable but `crontab` is, `tool/install.sh` falls back to
 `--scheduler cron`: three lines marked with a trailing `# lore` comment, each setting
 `LORE_DIR`, `HOME`, and a fixed `PATH` inline (`crontab -l | grep lore` shows them). Reruns
 are idempotent: the installer strips any previously installed `# lore` lines before adding
@@ -48,8 +48,8 @@ lore-refresh.service` instead of `launchctl kickstart` for the watchdog's refres
 
 ## Python floor
 
-`install.sh` and `lore.py doctor` both expect Python 3.12 or newer. 3.10 and 3.11 are
+`tool/install.sh` and `lore.py doctor` both expect Python 3.12 or newer. 3.10 and 3.11 are
 security-only and 3.10 reaches end of life in October 2026; the connectors' `X | Y` union
 type annotations only need 3.10, the floor is set higher for support reasons. Most current
 Linux distributions ship this by default; if yours does not, install a newer `python3` and
-point your shell's `python3` at it before running `install.sh`.
+point your shell's `python3` at it before running `tool/install.sh`.

@@ -40,7 +40,7 @@ ALLOWLIST_FILES=(
     "LICENSE"
     "NOTICE"
     "README.md"
-    "skill/SKILL.md"
+    "tool/skill/SKILL.md"
     "docs/claude-code-plugin.md"
     ".claude-plugin/plugin.json"
     ".claude-plugin/marketplace.json"
